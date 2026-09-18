@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Philipp — Fotografie &amp; Video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0b;
+    --bg-alt:#131315;
+    --panel:#18181b;
+    --text:#f2f1ed;
+    --text-muted:#89898d;
+    --accent:#e8432c;
+    --accent-soft:rgba(232,67,44,0.14);
+    --line:rgba(242,241,237,0.10);
+    --line-strong:rgba(242,241,237,0.26);
+    --serif:'Space Mono', 'Courier New', monospace;
+    --sans:'Space Mono', 'Courier New', monospace;
+  }
+  :root:not([data-theme="light"]){ color-scheme: dark; }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0a0a0b; --bg-alt:#131315; --panel:#18181b; --text:#f2f1ed; --text-muted:#89898d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0a0a0b; --bg-alt:#131315; --panel:#18181b; --text:#f2f1ed; --text-muted:#89898d;
+  }
+  :root[data-theme="light"]{
+    color-scheme: light;
+    --bg:#f4f3f0; --bg-alt:#eae8e3; --panel:#ffffff; --text:#17171a; --text-muted:#6b6b6f;
+    --line:rgba(23,23,26,0.10); --line-strong:rgba(23,23,26,0.22);
+    --accent:#c8351d; --accent-soft:rgba(200,53,29,0.12);
+  }
+  :root[data-theme="light"] .bento-frame{ background:#141414; }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  ul{ list-style:none; }
+  section{ padding:min(14vw,140px) 8vw; }
+  .wrap{ max-width:1180px; margin:0 auto; }
+  ::selection{ background:var(--accent); color:#141414; }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--accent); outline-offset:3px;
+  }
+
+  /* ---------- NAV ---------- */
+  header.topnav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:26px 8vw;
+    transition:background .4s ease, padding .4s ease, border-color .4s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.topnav.scrolled{
+    padding:16px 8vw;
+    background:rgba(14,14,16,0.82);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    font-family:var(--serif); font-weight:700; font-size:1.15rem; letter-spacing:.01em;
+  }
+  .brand em{ font-style:italic; color:var(--accent); }
+  nav.links{ display:flex; gap:2.4rem; }
+  nav.links a{
+    font-size:.92rem; color:var(--text-muted); position:relative; padding:4px 0;
+    transition:color .25s ease;
+  }
+  nav.links a::after{
+    content:''; position:absolute; left:0; bottom:-2px; width:0; height:1px; background:var(--accent);
+    transition:width .3s ease;
+  }
+  nav.links a:hover, nav.links a:focus-visible{ color:var(--text); }
+  nav.links a:hover::after, nav.links a:focus-visible::after{ width:100%; }
+
+  .navtoggle{
+    display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:8px;
+  }
+  .navtoggle span{ width:22px; height:1px; background:var(--text); display:block; }
+
+  /* ---------- HERO / BENTO ---------- */
+  .hero{
+    min-height:100svh; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    padding-top:120px; position:relative; gap:1.8rem;
+  }
+  .bento-frame{
+    width:100%; max-width:980px; background:#000; border-radius:22px; border:1px solid var(--line-strong);
+    padding:1.6vw; box-shadow:0 40px 90px -30px rgba(0,0,0,0.7);
+  }
+  .bento-bar{
+    display:flex; justify-content:space-between; align-items:center; padding:.4rem .6rem 1rem;
+    font-size:.75rem; color:var(--text-muted); letter-spacing:.04em;
+  }
+  .bento-mark{ color:var(--accent); }
+  .bento{
+    display:grid;
+    grid-template-columns:1.25fr 1fr 1fr;
+    grid-auto-rows:minmax(64px,auto);
+    gap:.7rem;
+  }
+  .bcard{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:1.1rem 1.2rem; display:flex; flex-direction:column; justify-content:space-between;
+    color:var(--text); position:relative; overflow:hidden; text-align:left;
+    font-family:var(--sans); cursor:default; transition:border-color .25s ease, transform .25s ease;
+  }
+  a.bcard, button.bcard{ cursor:pointer; }
+  a.bcard:hover, button.bcard:hover{ border-color:var(--line-strong); transform:translateY(-2px); }
+  .b-label{ font-size:.68rem; color:var(--text-muted); letter-spacing:.06em; }
+  .b-link-row{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; font-size:.82rem; margin-top:.6rem; }
+  .b-arrow{ color:var(--accent); }
+
+  .b-hello{ grid-column:1; grid-row:1/5; justify-content:space-between; }
+  .b-hello-text{ font-size:.92rem; line-height:1.7; letter-spacing:.01em; }
+  .b-hello-links{ display:flex; flex-direction:column; gap:.4rem; margin-top:1.4rem; }
+  .b-hello-links a{ font-size:.72rem; color:var(--text-muted); letter-spacing:.05em; transition:color .2s ease; }
+  .b-hello-links a:hover{ color:var(--accent); }
+
+  .b-photo{ grid-column:2; grid-row:1/3; padding:0; }
+  .b-photo-fill{ width:100%; height:100%; background:linear-gradient(160deg,#232228,#0c0c0d 70%); min-height:120px; }
+
+  .b-sayhello{ grid-column:2; grid-row:3/5; align-items:flex-start; gap:.5rem; text-decoration:none; }
+  .b-sayhello span:last-child{ font-size:.78rem; line-height:1.5; letter-spacing:.03em; }
+  .b-wave{ font-size:1.2rem; }
+
+  .b-status{ grid-column:3; grid-row:1; }
+  .b-status-row{ display:flex; align-items:center; gap:.5rem; font-size:.8rem; margin-top:.5rem; }
+  .b-dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent); }
+
+  .b-toggle{ grid-column:3; grid-row:2; align-items:flex-start; gap:.5rem; background:var(--panel); border:1px solid var(--line); }
+  .b-icon{ font-size:1rem; }
+  .b-toggle-label{ font-size:.68rem; color:var(--text-muted); letter-spacing:.04em; text-align:left; }
+
+  .b-link{ grid-column:3; text-decoration:none; }
+  .bento a.b-link:nth-of-type(2){ grid-row:3; }
+  .bento a.b-link:nth-of-type(3){ grid-row:4; }
+
+  .b-journal{ grid-column:1; grid-row:5; text-decoration:none; align-items:flex-start; }
+  .b-thumbs{ display:flex; gap:.4rem; margin-top:.8rem; }
+  .thumb{ width:36px; height:36px; border-radius:7px; }
+
+  .b-resources{ grid-column:2; grid-row:5; }
+
+  .b-tools{ grid-column:3; grid-row:5; }
+  .b-tool-icons{ display:flex; gap:.6rem; margin-top:.8rem; font-size:1rem; flex-wrap:wrap; }
+
+  .scrollcue{
+    display:flex; align-items:center; gap:.7rem; color:var(--text-muted); font-size:.78rem;
+    letter-spacing:.04em;
+  }
+  .scrollcue .stick{
+    width:1px; height:38px; background:linear-gradient(var(--accent), transparent);
+    animation:cue 2.2s ease-in-out infinite;
+  }
+  @keyframes cue{
+    0%{ transform:scaleY(0); transform-origin:top; }
+    50%{ transform:scaleY(1); transform-origin:top; }
+    50.01%{ transform-origin:bottom; }
+    100%{ transform:scaleY(0); transform-origin:bottom; }
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{
+    opacity:0; transform:translateY(26px);
+    transition:opacity .8s ease, transform .8s cubic-bezier(.22,1,.36,1);
+    transition-delay:calc(var(--i, 0) * 70ms);
+  }
+  .reveal.visible{ opacity:1; transform:translateY(0); }
+
+  /* ---------- section heads ---------- */
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:2rem;
+    margin-bottom:3.4rem; flex-wrap:wrap; border-bottom:1px solid var(--line); padding-bottom:1.6rem;
+  }
+  .section-head .index{ font-size:.8rem; color:var(--text-muted); }
+  .section-head h2{
+    font-family:var(--serif); font-weight:400; font-size:clamp(1.9rem,3.4vw,3rem);
+  }
+  .section-head p{ color:var(--text-muted); max-width:36ch; font-size:.95rem; }
+
+  /* ---------- ÜBER ---------- */
+  .about-grid{ display:grid; grid-template-columns:1.1fr 1fr; gap:4rem; }
+  .about-lead{ font-family:var(--serif); font-weight:400; font-size:clamp(1.3rem,2.4vw,1.9rem); line-height:1.4; }
+  .about-lead em{ font-style:italic; color:var(--accent); }
+  .stat-list{ display:flex; flex-direction:column; gap:1.4rem; }
+  .stat-row{ display:flex; justify-content:space-between; border-bottom:1px solid var(--line); padding-bottom:1.1rem; }
+  .stat-row .label{ color:var(--text-muted); font-size:.9rem; }
+  .stat-row .val{ font-family:var(--serif); font-size:1.1rem; }
+
+  /* ---------- PROJEKTE ---------- */
+  .filters{ display:flex; gap:.6rem; flex-wrap:wrap; }
+  .filter-btn{
+    font-family:var(--sans); font-size:.85rem; color:var(--text-muted);
+    background:transparent; border:1px solid var(--line); border-radius:100px;
+    padding:.5rem 1.1rem; cursor:pointer; transition:.25s ease;
+  }
+  .filter-btn:hover{ border-color:var(--line-strong); color:var(--text); }
+  .filter-btn.active{ background:var(--text); color:var(--bg); border-color:var(--text); }
+
+  .grid{
+    margin-top:2.6rem;
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:1.4rem;
+  }
+  .card{
+    position:relative; aspect-ratio:4/5; border-radius:6px; overflow:hidden; cursor:pointer;
+    border:1px solid var(--line);
+  }
+  .card .swatch{
+    position:absolute; inset:0; transition:transform .7s cubic-bezier(.22,1,.36,1);
+  }
+  .card:hover .swatch{ transform:scale(1.05); }
+  .card .shade{
+    position:absolute; inset:0; background:linear-gradient(180deg, rgba(14,14,16,0) 40%, rgba(14,14,16,0.88) 100%);
+  }
+  .card .meta{
+    position:absolute; left:0; right:0; bottom:0; padding:1.2rem;
+    display:flex; justify-content:space-between; align-items:flex-end; gap:.6rem;
+  }
+  .card .meta .tt{ font-family:var(--serif); font-size:1.05rem; }
+  .card .meta .cat{ font-size:.72rem; color:var(--accent); letter-spacing:.03em; }
+  .card .play{
+    position:absolute; top:1.1rem; right:1.1rem; width:34px; height:34px; border-radius:50%;
+    background:rgba(14,14,16,0.55); border:1px solid var(--line-strong);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card.hide{ display:none; }
+
+  /* ---------- KONTAKT ---------- */
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:4rem; }
+  .contact-lead{ font-family:var(--serif); font-weight:400; font-size:clamp(1.6rem,3vw,2.4rem); max-width:14ch; }
+  .contact-links{ margin-top:2.2rem; display:flex; flex-direction:column; gap:.9rem; }
+  .contact-links a{ font-size:1rem; color:var(--text-muted); transition:.2s ease; display:inline-flex; align-items:center; gap:.5rem;}
+  .contact-links a:hover{ color:var(--accent); }
+
+  form.card-form{ display:flex; flex-direction:column; gap:1.3rem; }
+  .field{ display:flex; flex-direction:column; gap:.5rem; }
+  .field label{ font-size:.8rem; color:var(--text-muted); }
+  .field input, .field textarea{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px; color:var(--text);
+    padding:.85rem 1rem; font-family:var(--sans); font-size:.95rem; resize:vertical;
+    transition:border-color .2s ease;
+  }
+  .field input:focus, .field textarea:focus{ border-color:var(--accent); outline:none; }
+  .submit-btn{
+    align-self:flex-start; margin-top:.4rem;
+    background:var(--accent); color:#151004; border:none; border-radius:4px;
+    padding:.9rem 1.6rem; font-family:var(--sans); font-weight:700; font-size:.9rem; cursor:pointer;
+    transition:filter .2s ease;
+  }
+  .submit-btn:hover{ filter:brightness(1.1); }
+  .form-note{ font-size:.78rem; color:var(--text-muted); }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding:3.4rem 8vw; border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+  }
+  footer .fnote{ font-size:.8rem; color:var(--text-muted); }
+  footer .flinks{ display:flex; gap:1.6rem; }
+  footer .flinks a{ font-size:.8rem; color:var(--text-muted); }
+  footer .flinks a:hover{ color:var(--text); }
+
+  /* ---------- IMPRESSUM MODAL ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(10,10,11,0.72); backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center; padding:6vw;
+    opacity:0; pointer-events:none; transition:opacity .3s ease; z-index:200;
+  }
+  .modal-overlay.open{ opacity:1; pointer-events:auto; }
+  .modal{
+    background:var(--bg-alt); border:1px solid var(--line-strong); border-radius:8px;
+    max-width:560px; width:100%; max-height:80vh; overflow-y:auto; padding:2.6rem;
+    transform:translateY(16px); transition:transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .modal-overlay.open .modal{ transform:translateY(0); }
+  .modal h3{ font-family:var(--serif); font-weight:700; font-size:1.5rem; margin-bottom:1.4rem; }
+  .modal h4{ font-size:.85rem; color:var(--accent); margin:1.4rem 0 .4rem; letter-spacing:.02em; }
+  .modal p{ font-size:.92rem; color:var(--text-muted); line-height:1.65; }
+  .modal .close{
+    position:absolute; top:1.6vw; right:1.6vw; background:none; border:1px solid var(--line-strong);
+    color:var(--text); width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:1rem;
+  }
+  .placeholder-note{
+    margin-top:1.6rem; padding:.9rem 1rem; border:1px dashed var(--line-strong); border-radius:4px;
+    font-size:.78rem; color:var(--accent);
+  }
+
+  @media (max-width:860px){
+    nav.links{ display:none; }
+    .navtoggle{ display:flex; }
+    .about-grid, .contact-grid{ grid-template-columns:1fr; gap:2.4rem; }
+    .grid{ grid-template-columns:repeat(2, 1fr); }
+    .bento{ grid-template-columns:1fr; }
+    .b-hello, .b-photo, .b-sayhello, .b-status, .b-toggle, .bento a.b-link:nth-of-type(1), .bento a.b-link:nth-of-type(2), .b-journal, .b-resources, .b-tools{
+      grid-column:1; grid-row:auto;
+    }
+    .b-photo-fill{ min-height:220px; }
+  }
+  @media (max-width:520px){
+    .grid{ grid-template-columns:1fr; }
+    section{ padding:96px 6vw; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+    .reveal{ opacity:1; transform:none; }
+    .hero h1 .line span{ transform:none; }
+  }
+
+  /* ---------- TEST OVERLAY ---------- */
+  #page-content{
+    filter:blur(9px);
+    transform:scale(1.02);
+    pointer-events:none;
+    user-select:none;
+  }
+  .test-overlay{
+    position:fixed; inset:0; z-index:500;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(10,10,11,0.45);
+  }
+  .test-word{
+    font-family:var(--sans); font-weight:700;
+    font-size:clamp(4.5rem, 22vw, 15rem);
+    letter-spacing:.02em;
+    color:var(--text);
+    text-shadow:0 0 60px rgba(0,0,0,0.6);
+    -webkit-text-stroke:1px var(--accent);
+  }
+</style>
+</head>
+<body>
+<div id="page-content">
+
+<header class="topnav" id="topnav">
+  <a href="#home" class="brand">Philipp <em>Fotografie &amp; Film</em></a>
+  <nav class="links">
+    <a href="#home">Home</a>
+    <a href="#ueber">Über</a>
+    <a href="#projekte">Projekte</a>
+    <a href="#kontakt">Kontakt</a>
+  </nav>
+  <button class="navtoggle" id="navtoggle" aria-label="Menü öffnen" aria-expanded="false">
+    <span></span><span></span>
+  </button>
+</header>
+
+<!-- mobile menu -->
+<div id="mobilemenu" style="position:fixed; inset:0; background:var(--bg); z-index:99; display:none; flex-direction:column; align-items:center; justify-content:center; gap:2.2rem;">
+  <a href="#home" class="mm-link" style="font-family:var(--serif); font-size:1.8rem;">Home</a>
+  <a href="#ueber" class="mm-link" style="font-family:var(--serif); font-size:1.8rem;">Über</a>
+  <a href="#projekte" class="mm-link" style="font-family:var(--serif); font-size:1.8rem;">Projekte</a>
+  <a href="#kontakt" class="mm-link" style="font-family:var(--serif); font-size:1.8rem;">Kontakt</a>
+</div>
+
+<main>
+
+  <!-- HOME -->
+  <section class="hero" id="home">
+    <div class="bento-frame reveal">
+      <div class="bento-bar">
+        <span class="bento-mark">◆</span>
+        <span class="bento-clock" id="bentoClock">—</span>
+      </div>
+
+      <div class="bento">
+        <div class="bcard b-hello">
+          <p class="b-hello-text">HALLO: ICH BIN PHILIPP 👋<br>FOTOGRAF + VIDEOGRAF<br>&amp; GESTALTER ✨ WAHRSCHEINLICH.</p>
+          <div class="b-hello-links">
+            <a href="#" target="_blank" rel="noopener">INSTAGRAM</a>
+            <a href="#" target="_blank" rel="noopener">BEHANCE</a>
+            <a href="#" target="_blank" rel="noopener">LINKEDIN</a>
+            <a href="mailto:hallo@philipp-portfolio.de">E-MAIL</a>
+          </div>
+        </div>
+
+        <div class="bcard b-photo"><div class="b-photo-fill"></div></div>
+
+        <a href="#kontakt" class="bcard b-sayhello">
+          <span class="b-wave">👋</span>
+          <span>SAY HELLO<br>LASS UNS ARBEITEN</span>
+        </a>
+
+        <div class="bcard b-status">
+          <span class="b-label">STATUS</span>
+          <span class="b-status-row"><span class="b-dot"></span>VERFÜGBAR</span>
+        </div>
+
+        <button class="bcard b-toggle" id="themeToggle" type="button">
+          <span class="b-icon" id="toggleIcon">☾</span>
+          <span class="b-toggle-label" id="toggleLabel">ZU HELL WECHSELN</span>
+        </button>
+
+        <a href="#projekte" class="bcard b-link">
+          <span class="b-label">ARBEITEN</span>
+          <span class="b-link-row">PROJEKTE ANSEHEN<span class="b-arrow">↗</span></span>
+        </a>
+
+        <a href="#ueber" class="bcard b-link">
+          <span class="b-label">ÜBER</span>
+          <span class="b-link-row">MEHR ERFAHREN<span class="b-arrow">↗</span></span>
+        </a>
+
+        <a href="#projekte" class="bcard b-journal">
+          <span class="b-label">NEUES</span>
+          <span class="b-link-row">LETZTE ARBEITEN<span class="b-arrow">↗</span></span>
+          <div class="b-thumbs">
+            <span class="thumb" style="background:linear-gradient(135deg,#2b1d10,#6b4423)"></span>
+            <span class="thumb" style="background:linear-gradient(135deg,#111318,#3a4048)"></span>
+            <span class="thumb" style="background:linear-gradient(135deg,#0f1416,#2c4a4a)"></span>
+          </div>
+        </a>
+
+        <div class="bcard b-resources">
+          <span class="b-label">LEISTUNGEN</span>
+          <span class="b-link-row">FOTO · VIDEO · DESIGN</span>
+        </div>
+
+        <div class="bcard b-tools">
+          <span class="b-label">TOOLS</span>
+          <span class="b-link-row">MEIN DAILY STACK</span>
+          <div class="b-tool-icons">
+            <span title="Kamera">📷</span>
+            <span title="Blender">🧊</span>
+            <span title="Figma">◈</span>
+            <span title="Premiere">▶</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrollcue reveal" style="--i:1"><div class="stick"></div>Scrollen</div>
+  </section>
+
+  <!-- ÜBER -->
+  <section id="ueber">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="index">01 / Über</span>
+          <h2 style="margin-top:.6rem;">Handwerk trifft Bildsprache</h2>
+        </div>
+        <p>Eine solide technische Ausbildung und ein Gespür für Ästhetik — das prägt, wie ich arbeite.</p>
+      </div>
+      <div class="about-grid">
+        <p class="about-lead reveal" style="--i:1">
+          Ich komme aus dem <em>Handwerk</em> und habe gelernt, präzise zu arbeiten — heute bringe ich das in jedes Shooting und jeden Schnitt ein. Ob Konzertfotografie, Hochzeitsfilm oder Markenauftritt: Ich arbeite von der Idee bis zur letzten Farbkorrektur.
+        </p>
+        <div class="stat-list reveal" style="--i:2">
+          <div class="stat-row"><span class="label">Ausbildung</span><span class="val">Industriemechaniker (IHK)</span></div>
+          <div class="stat-row"><span class="label">Studium</span><span class="val">Digital Media, Region Ulm</span></div>
+          <div class="stat-row"><span class="label">Tools</span><span class="val">Kamera, Figma, Blender</span></div>
+          <div class="stat-row"><span class="label">Verfügbar für</span><span class="val">Foto · Video · Design</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJEKTE -->
+  <section id="projekte" style="background:var(--bg-alt);">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="index">02 / Ausgewählte Arbeiten</span>
+          <h2 style="margin-top:.6rem;">Projekte</h2>
+        </div>
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">Alle</button>
+          <button class="filter-btn" data-filter="foto">Fotografie</button>
+          <button class="filter-btn" data-filter="video">Video</button>
+          <button class="filter-btn" data-filter="design">Design</button>
+        </div>
+      </div>
+
+      <div class="grid" id="grid">
+        <!-- cards injected via JS from PROJECTS array -->
+      </div>
+    </div>
+  </section>
+
+  <!-- KONTAKT -->
+  <section id="kontakt">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="index">03 / Kontakt</span>
+          <h2 style="margin-top:.6rem;">Lass uns etwas gestalten</h2>
+        </div>
+        <p>Anfragen für Shootings, Videoproduktion oder Design — meld dich einfach.</p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="reveal" style="--i:1">
+          <p class="contact-lead">Ich freue mich auf deine Nachricht.</p>
+          <div class="contact-links">
+            <a href="mailto:hallo@philipp-portfolio.de">hallo@philipp-portfolio.de</a>
+            <a href="tel:+49000000000">+49 000 000 000 <span class="form-note">[Platzhalter]</span></a>
+            <a href="#" target="_blank" rel="noopener">Instagram — @philipp.visuals <span class="form-note">[Platzhalter]</span></a>
+          </div>
+        </div>
+
+        <form class="card-form reveal" style="--i:2" id="contactForm">
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" required placeholder="Dein Name">
+          </div>
+          <div class="field">
+            <label for="email">E-Mail</label>
+            <input id="email" name="email" type="email" required placeholder="du@beispiel.de">
+          </div>
+          <div class="field">
+            <label for="message">Nachricht</label>
+            <textarea id="message" name="message" rows="4" required placeholder="Worum geht's?"></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Nachricht senden</button>
+          <p class="form-note">Öffnet dein E-Mail-Programm mit vorausgefüllter Nachricht.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <span class="fnote">© <span id="year"></span> Philipp — Fotografie &amp; Film</span>
+  <div class="flinks">
+    <a href="#home">Nach oben</a>
+    <a href="#" id="impressum-link">Impressum</a>
+    <a href="#" id="datenschutz-link">Datenschutz</a>
+  </div>
+</footer>
+
+<!-- IMPRESSUM MODAL -->
+<div class="modal-overlay" id="impressum-overlay">
+  <div class="modal" style="position:relative;">
+    <button class="close" id="impressum-close" aria-label="Schließen">✕</button>
+    <h3>Impressum</h3>
+    <h4>Angaben gemäß § 5 TMG</h4>
+    <p>[Vorname Nachname]<br>[Straße Hausnummer]<br>[PLZ Ort]</p>
+    <h4>Kontakt</h4>
+    <p>Telefon: [Telefonnummer]<br>E-Mail: [E-Mail-Adresse]</p>
+    <h4>Umsatzsteuer-ID</h4>
+    <p>[Falls vorhanden: USt-IdNr. gemäß §27a UStG]</p>
+    <h4>Verantwortlich für den Inhalt (§ 18 Abs. 2 MStV)</h4>
+    <p>[Vorname Nachname, Anschrift wie oben]</p>
+    <div class="placeholder-note">Dies ist ein Platzhalter-Impressum. Bitte ersetze die eckigen Klammern durch deine echten Angaben — ein Impressum ist in Deutschland gesetzlich vorgeschrieben.</div>
+  </div>
+</div>
+
+<!-- DATENSCHUTZ MODAL -->
+<div class="modal-overlay" id="datenschutz-overlay">
+  <div class="modal" style="position:relative;">
+    <button class="close" id="datenschutz-close" aria-label="Schließen">✕</button>
+    <h3>Datenschutz</h3>
+    <p>[Platzhalter für deine Datenschutzerklärung — insbesondere zur Verarbeitung von Daten aus dem Kontaktformular. Empfehlenswert ist, hierfür einen Datenschutz-Generator (z. B. eines Anwalts oder einer Verbraucherzentrale) zu nutzen und den Text hier einzufügen.]</p>
+    <div class="placeholder-note">Bitte durch eine rechtssichere Datenschutzerklärung ersetzen.</div>
+  </div>
+</div>
+
+<script>
+  // ---------- year ----------
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ---------- nav scroll state ----------
+  const topnav = document.getElementById('topnav');
+  window.addEventListener('scroll', () => {
+    topnav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive:true });
+
+  // ---------- hero load-in ----------
+  requestAnimationFrame(() => {
+    document.querySelector('.hero').classList.add('loaded');
+  });
+
+  // ---------- mobile menu ----------
+  const navtoggle = document.getElementById('navtoggle');
+  const mobilemenu = document.getElementById('mobilemenu');
+  navtoggle.addEventListener('click', () => {
+    const isOpen = mobilemenu.style.display === 'flex';
+    mobilemenu.style.display = isOpen ? 'none' : 'flex';
+    navtoggle.setAttribute('aria-expanded', String(!isOpen));
+  });
+  document.querySelectorAll('.mm-link').forEach(a => a.addEventListener('click', () => {
+    mobilemenu.style.display = 'none';
+    navtoggle.setAttribute('aria-expanded', 'false');
+  }));
+
+  // ---------- scroll reveal ----------
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // ---------- projects data (placeholders — replace titles + swatch gradients with real work) ----------
+  const PROJECTS = [
+    { title:'Clubnacht — Konzertfotografie', cat:'foto', catLabel:'Fotografie', grad:'linear-gradient(135deg,#2b1d10,#6b4423)' },
+    { title:'Hochzeit S&amp;M — Trailer', cat:'video', catLabel:'Video', grad:'linear-gradient(135deg,#111318,#3a4048)' },
+    { title:'Studio — Produktserie', cat:'foto', catLabel:'Fotografie', grad:'linear-gradient(135deg,#171512,#4a3a26)' },
+    { title:'Markenauftritt — Branding', cat:'design', catLabel:'Design', grad:'linear-gradient(135deg,#161217,#4a2f3a)' },
+    { title:'Available Light — Portraitserie', cat:'foto', catLabel:'Fotografie', grad:'linear-gradient(135deg,#0f1416,#2c4a4a)' },
+    { title:'Festival — Nachschnitt', cat:'video', catLabel:'Video', grad:'linear-gradient(135deg,#151313,#553322)' },
+    { title:'App-Konzept — UI Design', cat:'design', catLabel:'Design', grad:'linear-gradient(135deg,#101216,#26314a)' },
+    { title:'Urban — Streetfotografie', cat:'foto', catLabel:'Fotografie', grad:'linear-gradient(135deg,#131313,#3d3d3d)' },
+    { title:'Kurzfilm — Colorgrading', cat:'video', catLabel:'Video', grad:'linear-gradient(135deg,#121014,#402b4d)' },
+  ];
+
+  const grid = document.getElementById('grid');
+  function renderProjects(){
+    grid.innerHTML = PROJECTS.map((p, i) => `
+      <div class="card reveal" style="--i:${i % 3}" data-cat="${p.cat}">
+        <div class="swatch" style="background:${p.grad}"></div>
+        <div class="shade"></div>
+        ${p.cat === 'video' ? `<div class="play"><svg width="12" height="12" viewBox="0 0 12 12"><polygon points="2,1 11,6 2,11" fill="#ede9e3"/></svg></div>` : ''}
+        <div class="meta">
+          <span class="tt">${p.title}</span>
+          <span class="cat">${p.catLabel}</span>
+        </div>
+      </div>
+    `).join('');
+    grid.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  }
+  renderProjects();
+
+  // ---------- filters ----------
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const f = btn.dataset.filter;
+      document.querySelectorAll('.card').forEach(card => {
+        const show = (f === 'all' || card.dataset.cat === f);
+        card.classList.toggle('hide', !show);
+      });
+    });
+  });
+
+  // ---------- contact form -> mailto ----------
+  document.getElementById('contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+    const subject = encodeURIComponent('Anfrage über Portfolio von ' + name);
+    const body = encodeURIComponent(message + '\n\n— ' + name + ' (' + email + ')');
+    window.location.href = `mailto:hallo@philipp-portfolio.de?subject=${subject}&body=${body}`;
+  });
+
+  // ---------- modals ----------
+  function wireModal(linkId, overlayId, closeId){
+    const link = document.getElementById(linkId);
+    const overlay = document.getElementById(overlayId);
+    const close = document.getElementById(closeId);
+    link.addEventListener('click', (e) => { e.preventDefault(); overlay.classList.add('open'); });
+    close.addEventListener('click', () => overlay.classList.remove('open'));
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+  }
+  wireModal('impressum-link', 'impressum-overlay', 'impressum-close');
+  wireModal('datenschutz-link', 'datenschutz-overlay', 'datenschutz-close');
+
+  // ---------- bento clock ----------
+  function updateClock(){
+    const el = document.getElementById('bentoClock');
+    if (!el) return;
+    const now = new Date();
+    const day = now.toLocaleDateString('de-DE', { weekday:'short' });
+    const time = now.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+    el.textContent = `${day} · ${time}`;
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  // ---------- theme toggle ----------
+  (function(){
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    const icon = document.getElementById('toggleIcon');
+    const label = document.getElementById('toggleLabel');
+    if (!btn) return;
+    let saved = 'dark';
+    try { saved = localStorage.getItem('portfolio-theme') || 'dark'; } catch(e) {}
+    function apply(theme){
+      root.setAttribute('data-theme', theme);
+      icon.textContent = theme === 'dark' ? '☾' : '☀';
+      label.textContent = theme === 'dark' ? 'ZU HELL WECHSELN' : 'ZU DUNKEL WECHSELN';
+    }
+    apply(saved);
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      apply(next);
+      try { localStorage.setItem('portfolio-theme', next); } catch(e) {}
+    });
+  })();
+</script>
+
+</div>
+
+<div class="test-overlay">
+  <span class="test-word">TEST</span>
+</div>
+
+</body>
+</html>
