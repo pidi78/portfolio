@@ -325,9 +325,31 @@
     .reveal{ opacity:1; transform:none; }
     .hero h1 .line span{ transform:none; }
   }
+
+  /* ---------- TEST OVERLAY ---------- */
+  #page-content{
+    filter:blur(9px);
+    transform:scale(1.02);
+    pointer-events:none;
+    user-select:none;
+  }
+  .test-overlay{
+    position:fixed; inset:0; z-index:500;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(10,10,11,0.45);
+  }
+  .test-word{
+    font-family:var(--sans); font-weight:700;
+    font-size:clamp(4.5rem, 22vw, 15rem);
+    letter-spacing:.02em;
+    color:var(--text);
+    text-shadow:0 0 60px rgba(0,0,0,0.6);
+    -webkit-text-stroke:1px var(--accent);
+  }
 </style>
 </head>
 <body>
+<div id="page-content">
 
 <header class="topnav" id="topnav">
   <a href="#home" class="brand">Philipp <em>Fotografie &amp; Film</em></a>
@@ -695,6 +717,12 @@
     });
   })();
 </script>
+
+</div>
+
+<div class="test-overlay">
+  <span class="test-word">TEST</span>
+</div>
 
 </body>
 </html>
